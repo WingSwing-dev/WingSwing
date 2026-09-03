@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>About — WingSwing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --tg-bg: #0f1a24;
+      --tg-surface: #172431;
+      --tg-surface-active: #1f3142;
+      --tg-accent: #2aabee;
+      --tg-text: #ffffff;
+      --tg-text-secondary: #708499;
+      --tg-border: rgba(255, 255, 255, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--tg-bg);
+      color: var(--tg-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Верхняя панель */
+    .header {
+      position: sticky;
+      top: 0;
+      height: 56px;
+      background: var(--tg-surface);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 20px;
+      border-bottom: 1px solid var(--tg-border);
+      z-index: 10;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: var(--tg-text);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .menu-btn:active {
+      background: var(--tg-surface-active);
+    }
+
+    .header-title {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    /* Затемнение фона */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 20;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Боковое меню (Drawer) */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: var(--tg-surface);
+      z-index: 30;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .drawer.active {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 24px 20px;
+      background: linear-gradient(135deg, #1d3347, #172431);
+      border-bottom: 1px solid var(--tg-border);
+    }
+
+    .drawer-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--tg-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(42, 171, 238, 0.3);
+    }
+
+    .drawer-title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .drawer-subtitle {
+      font-size: 13px;
+      color: var(--tg-accent);
+      margin-top: 2px;
+    }
+
+    .drawer-menu {
+      list-style: none;
+      padding: 8px 0;
+    }
+
+    .drawer-item a {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 24px;
+      color: var(--tg-text);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .drawer-item a:active,
+    .drawer-item.active a {
+      background: var(--tg-surface-active);
+      color: var(--tg-accent);
+    }
+
+    .drawer-item i {
+      font-size: 19px;
+      width: 24px;
+      text-align: center;
+      color: var(--tg-text-secondary);
+    }
+
+    .drawer-item.active i {
+      color: var(--tg-accent);
+    }
+
+    /* Контент */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--tg-surface);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid var(--tg-border);
+    }
+
+    .profile-card {
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2aabee, #176999);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      color: #fff;
+      margin: 0 auto 12px;
+    }
+
+    .user-name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .user-tag {
+      font-size: 14px;
+      color: var(--tg-accent);
+      margin-top: 4px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      color: var(--tg-accent);
+      margin-bottom: 8px;
+    }
+
+    .card-text {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #d1dbe5;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .tg-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px;
+      background: var(--tg-accent);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: transform 0.1s;
+    }
+
+    .tg-btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <button class="menu-btn" id="openMenuBtn">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="header-title">О проекте</div>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+
+  <nav class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo">
+        <i class="fa-solid fa-feather-pointed"></i>
+      </div>
+      <div class="drawer-title">WingSwing</div>
+      <div class="drawer-subtitle">wingswing.xyz</div>
+    </div>
+    <ul class="drawer-menu">
+      <li class="drawer-item">
+        <a href="/">
+          <i class="fa-solid fa-house"></i>
+          <span>Главная</span>
+        </a>
+      </li>
+      <li class="drawer-item active">
+        <a href="/about">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>О проекте</span>
+        </a>
+      </li>
+      <li class="drawer-item">
+        <a href="/download">
+          <i class="fa-solid fa-download"></i>
+          <span>Загрузки</span>
+        </a>
+      </li>
+      <li class="drawer-item">
+        <a href="/meow">
+          <i class="fa-solid fa-cat"></i>
+          <span>Meow</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div class="card profile-card">
+      <div class="avatar">
+        <i class="fa-solid fa-feather-pointed"></i>
+      </div>
+      <div class="user-name">WingSwing</div>
+      <div class="user-tag">wingswing.xyz</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Информация</div>
+      <div class="card-text">
+        Добро пожаловать в WingSwing. Здесь собраны мои веб-проекты, полезные файлы и интересные штуки.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Контакты и профили</div>
+      <div class="btn-group">
+        <a href="https://t.me/grace_fansd" target="_blank" rel="noopener noreferrer" class="tg-btn">
+          <i class="fa-brands fa-telegram"></i>
+          <span>Мой Telegram</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const openMenuBtn = document.getElementById('openMenuBtn');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+
+    function toggleMenu(isOpen) {
+      drawer.classList.toggle('active', isOpen);
+      overlay.classList.toggle('active', isOpen);
+    }
+
+    openMenuBtn.addEventListener('click', () => toggleMenu(true));
+    overlay.addEventListener('click', () => toggleMenu(false));
+  </script>
+</body>
+</html>
